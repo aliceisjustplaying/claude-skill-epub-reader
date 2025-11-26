@@ -189,10 +189,11 @@ async function getChapterContent(epub, index) {
     if (!content) {
         throw new Error(`Could not read content file: ${fullPath}`);
     }
-    // Extract title from content if possible
+    // Extract title: search TOC tree for matching href, fallback to content extraction
     const titleMatch = content.match(/<title>([^<]*)<\/title>/i);
     const h1Match = content.match(/<h1[^>]*>([^<]*)<\/h1>/i);
-    const title = epub.toc[index]?.label ||
+    const tocItem = findTocItemByHref(epub.toc, manifestItem.href);
+    const title = tocItem?.label ||
         h1Match?.[1] ||
         titleMatch?.[1] ||
         `Chapter ${index + 1}`;
@@ -230,13 +231,49 @@ async function searchContent(epub, query) {
 function escapeRegex(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-function formatToc(toc, indent = 0) {
+/**
+ * Build a map from href (normalized, without fragment) to spine index (1-based).
+ */
+function buildHrefToSpineMap(epub) {
+    const hrefToSpine = new Map();
+    epub.spine.forEach((spineItem, index) => {
+        const manifestItem = epub.manifest.get(spineItem.idref);
+        if (manifestItem) {
+            // Normalize href: remove fragment and leading path components that might differ
+            const href = manifestItem.href.split("#")[0];
+            hrefToSpine.set(href, index + 1); // 1-based for user display
+        }
+    });
+    return hrefToSpine;
+}
+/**
+ * Recursively search TOC tree for an item matching the given href.
+ */
+function findTocItemByHref(toc, href) {
+    const normalizedHref = href.split("#")[0];
+    for (const item of toc) {
+        const itemHref = item.href.split("#")[0];
+        if (itemHref === normalizedHref) {
+            return item;
+        }
+        if (item.children) {
+            const found = findTocItemByHref(item.children, href);
+            if (found)
+                return found;
+        }
+    }
+    return undefined;
+}
+function formatToc(toc, hrefToSpine, indent = 0) {
     let output = "";
     toc.forEach((item, index) => {
         const prefix = "  ".repeat(indent);
-        output += `${prefix}${indent === 0 ? index + 1 + "." : "-"} ${item.label}\n`;
+        const itemHref = item.href.split("#")[0];
+        const spineIndex = hrefToSpine.get(itemHref);
+        const chapterRef = spineIndex ? ` [ch: ${spineIndex}]` : "";
+        output += `${prefix}${indent === 0 ? index + 1 + "." : "-"} ${item.label}${chapterRef}\n`;
         if (item.children) {
-            output += formatToc(item.children, indent + 1);
+            output += formatToc(item.children, hrefToSpine, indent + 1);
         }
     });
     return output;
@@ -287,9 +324,10 @@ program
     .action(async (file) => {
     try {
         const epub = await loadEpub(file);
+        const hrefToSpine = buildHrefToSpineMap(epub);
         console.log("# Table of Contents\n");
         if (epub.toc.length > 0) {
-            console.log(formatToc(epub.toc));
+            console.log(formatToc(epub.toc, hrefToSpine));
         }
         else {
             // Fallback to spine-based listing

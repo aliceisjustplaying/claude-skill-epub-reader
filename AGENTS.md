@@ -68,3 +68,20 @@ npm run build
 ```
 
 Restart Claude Code after any changes to SKILL.md for them to take effect.
+
+## Changelog
+
+### 2025-11-26: TOC-to-Chapter Navigation Fix
+
+**Problem:** The table of contents (TOC) display showed sequential numbering that didn't correspond to the `chapter` command's spine-based indexing. Users had no way to know which chapter number to use.
+
+**Solution:**
+- TOC now displays inline chapter references: `Chapter Five [ch: 14]`
+- Users can see exactly which number to use with the `chapter` command
+- Fixed title extraction to properly search the nested TOC tree by href instead of assuming index alignment
+
+**Changes made to `src/index.ts`:**
+1. Added `buildHrefToSpineMap()` - creates href-to-spine index mapping
+2. Added `findTocItemByHref()` - recursively searches TOC tree for matching href
+3. Updated `formatToc()` - shows `[ch: N]` inline with each entry
+4. Fixed `getChapterContent()` - uses proper TOC lookup for title extraction

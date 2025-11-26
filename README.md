@@ -5,7 +5,7 @@ A Claude Code skill that enables efficient reading of EPUB ebook files.
 ## Features
 
 - **Metadata extraction** - title, author, publisher, date, language
-- **Table of contents** - view chapter structure
+- **Table of contents** - view chapter structure with chapter references (`[ch: N]`)
 - **Chapter reading** - read specific chapters by number
 - **Full extraction** - extract entire book as markdown
 - **Search** - find text with surrounding context

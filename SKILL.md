@@ -22,7 +22,7 @@ node ~/.claude/skills/epub/scripts/epub-reader/dist/index.js metadata "<path-to-
 ```
 
 #### 2. List Table of Contents
-View all chapters and their structure.
+View all chapters and their structure. Each entry shows `[ch: N]` indicating the chapter number to use with the `chapter` command.
 
 ```bash
 node ~/.claude/skills/epub/scripts/epub-reader/dist/index.js toc "<path-to-epub>"
@@ -83,6 +83,7 @@ node ~/.claude/skills/epub/scripts/epub-reader/dist/index.js search "/path/to/bo
 ## Notes
 
 - Chapter numbers are 1-indexed (first chapter is 1, not 0)
+- Use the `[ch: N]` reference from the TOC output to find the correct chapter number
 - Paths with spaces must be quoted
 - Large books may produce substantial output with the `full` command
 - Search results show up to 5 matches per chapter with context
