@@ -9,6 +9,7 @@ A Claude Code skill that enables efficient reading of EPUB ebook files.
 - **Chapter reading** - read specific chapters by number
 - **Full extraction** - extract entire book as markdown
 - **Search** - find text with surrounding context
+- **Open-ended search** - broad queries are automatically expanded using Claude's domain knowledge
 
 ## Installation
 
@@ -23,6 +24,7 @@ Just ask Claude naturally about EPUB files:
 - "Read chapter 5"
 - "Search for 'democracy' in the book"
 - "Extract the entire book as markdown"
+- "What does the book say about the main character's motivation?" (open-ended queries work too!)
 
 Claude will automatically use this skill when it detects EPUB-related requests.
 

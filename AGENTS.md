@@ -85,3 +85,7 @@ Restart Claude Code after any changes to SKILL.md for them to take effect.
 2. Added `findTocItemByHref()` - recursively searches TOC tree for matching href
 3. Updated `formatToc()` - shows `[ch: N]` inline with each entry
 4. Fixed `getChapterContent()` - uses proper TOC lookup for title extraction
+
+### 2025-11-26: Open-Ended Search Documentation
+
+Added documentation for handling broad/conceptual queries using LLM-assisted query expansion. For queries like "what are the main themes?" or "find references to the protagonist's childhood", Claude expands the query into multiple specific search terms using domain knowledge, runs parallel searches, and synthesizes the results. This leverages Claude's knowledge to catch synonyms and related concepts without requiring fuzzy search infrastructure.

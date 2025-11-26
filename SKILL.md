@@ -56,6 +56,32 @@ node ~/.claude/skills/epub/scripts/epub-reader/dist/index.js search "<path-to-ep
 3. **Read specific chapters** for targeted analysis, or use **full** for complete extraction
 4. **Use search** to find specific topics, quotes, or references
 
+## Open-Ended Search
+
+For broad or conceptual queries like "what are the main themes in this book?" or "find all references to the protagonist's childhood", use **query expansion**:
+
+1. **Expand the query** into multiple specific search terms using domain knowledge
+   - Example: "protagonist's childhood" → search for character name, "young", "childhood", "memory", "father", "mother", "grew up", etc.
+2. **Run searches in parallel** for each expanded term
+3. **Synthesize results** by deduplicating and consolidating findings across searches
+
+This approach leverages Claude's domain knowledge to catch synonyms, related concepts, and terminology variations that a simple keyword search would miss.
+
+### Example
+
+User asks: "What does the book say about the author's research methodology?"
+
+Expand to searches:
+- "methodology"
+- "research"
+- "study"
+- "analysis"
+- "data"
+- "findings"
+- "evidence"
+
+Then consolidate the results into a comprehensive answer.
+
 ## Output Format
 
 All output is clean Markdown:
